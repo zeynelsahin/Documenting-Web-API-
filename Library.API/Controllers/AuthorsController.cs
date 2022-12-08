@@ -30,6 +30,11 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<IEnumerable<Author>>(authorsFromRepo));
         }
 
+        /// <summary>
+        /// Get an author by their id
+        /// </summary>
+        /// <param name="authorId">The id of author you want to get</param>
+        /// <returns>An author with id, firstname and lastname fields</returns>
         [HttpGet("{authorId}")]
         public async Task<ActionResult<Author>> GetAuthor(
             Guid authorId)
@@ -64,6 +69,24 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<Author>(authorFromRepo));
         }
 
+        /// <summary>
+        /// Partially update an author
+        /// </summary>
+        /// <param name="authorId">The id of the author you want to get</param>
+        /// <param name="patchDocument">The set of operations to apply to the author</param>
+        /// <returns>An ActionResult of type Author</returns>
+        /// <remarks>
+        /// Sample request (this request updates te author's first name):
+        ///
+        /// PATCH /authors/id \
+        /// [\
+        ///    {\
+        ///      "op": "replace", \
+        ///      "path": "/firstname",\
+        ///      "value": "new first name" \
+        ///      } \
+        /// ]\
+        /// </remarks>
         [HttpPatch("{authorId}")]
         public async Task<ActionResult<Author>> UpdateAuthor(
             Guid authorId,

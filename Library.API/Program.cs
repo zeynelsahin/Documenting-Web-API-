@@ -1,3 +1,4 @@
+using System.Reflection;
 using Library.API.Contexts;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -45,8 +46,24 @@ builder.Services.AddSwaggerGen(builder =>
     builder.SwaggerDoc("LibraryOpenAPISpecification", new()
     {
         Title = "Library API",
-        Version = "1"
+        Version = "1",
+        Description = "Through this API you can access authors and their books",
+        Contact = new ()
+        {
+            Email = "zeynelsahin@zeynelsahin.com",
+            Name = "Zeynel Şahin",
+            Url = new Uri("https://www.zeynelsahin.com"),
+        },
+        License = new ()
+        {
+            Name = "MIT License",
+            Url = new Uri("https://opensourceçorg/licenses/MIT")
+        }
     });
+
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+    builder.IncludeXmlComments(xmlCommentsFullPath);
 });
 var app = builder.Build();
 

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Wiosg8vIctUiXCeCDy2fTf0p1L5MVKAbHoCIKxYLMFhZeNu1DSUFAUwP4ObR1S9PKPNGB8FFH2aNXch/H2dmAQ==",
+  "dgSpecHash": "hIbMuNZNS7MaiDywOBZNEJRB96rF6mpL4hSAtxb7O1x7bXNPkGCX65AE86qLtx95F/Pboc83cxmu3FpgOCA3EQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\zeynels\\Desktop\\Git Project\\API Documentation\\Library.API\\Library.API.csproj",
   "expectedPackageFiles": [
@@ -47,7 +47,11 @@
     "C:\\Users\\zeynels\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\system.text.encodings.web\\6.0.0\\system.text.encodings.web.6.0.0.nupkg.sha512",
-    "C:\\Users\\zeynels\\.nuget\\packages\\system.text.json\\6.0.0\\system.text.json.6.0.0.nupkg.sha512"
+    "C:\\Users\\zeynels\\.nuget\\packages\\system.text.json\\6.0.0\\system.text.json.6.0.0.nupkg.sha512",
+    "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.11\\microsoft.netcore.app.ref.6.0.11.nupkg.sha512",
+    "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.11\\microsoft.windowsdesktop.app.ref.6.0.11.nupkg.sha512",
+    "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.11\\microsoft.aspnetcore.app.ref.6.0.11.nupkg.sha512",
+    "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.11\\microsoft.netcore.app.host.win-x64.6.0.11.nupkg.sha512"
   ],
   "logs": [
     {
