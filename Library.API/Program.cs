@@ -8,17 +8,14 @@ using Newtonsoft.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(configure =>
-{
-    configure.ReturnHttpNotAcceptable = true;
-}).AddNewtonsoftJson(setupAction =>
+builder.Services.AddControllers(configure => { configure.ReturnHttpNotAcceptable = true; }).AddNewtonsoftJson(setupAction =>
 {
     setupAction.SerializerSettings.ContractResolver =
-       new CamelCasePropertyNamesContractResolver();
+        new CamelCasePropertyNamesContractResolver();
 });
 
 // configure the NewtonsoftJsonOutputFormatter
-builder.Services.Configure<MvcOptions>(configureOptions => 
+builder.Services.Configure<MvcOptions>(configureOptions =>
 {
     var jsonOutputFormatter = configureOptions.OutputFormatters
         .OfType<NewtonsoftJsonOutputFormatter>().FirstOrDefault();
@@ -32,7 +29,7 @@ builder.Services.Configure<MvcOptions>(configureOptions =>
             jsonOutputFormatter.SupportedMediaTypes.Remove("text/json");
         }
     }
-}); 
+});
 
 builder.Services.AddDbContext<LibraryContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
@@ -43,8 +40,22 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddSwaggerGen(builder =>
+{
+    builder.SwaggerDoc("LibraryOpenAPISpecification", new()
+    {
+        Title = "Library API",
+        Version = "1"
+    });
+});
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+    options.RoutePrefix = string.Empty;
+});
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
