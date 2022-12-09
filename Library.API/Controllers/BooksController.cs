@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Library.API.Attributes;
 using Library.API.Models;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace Library.API.Controllers
     // [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
     // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ApiController]
-    [Produces("application/json","application/xml")]
+    [Produces("application/json", "application/xml")]
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
@@ -22,15 +23,15 @@ namespace Library.API.Controllers
             IAuthorRepository authorRepository,
             IMapper mapper)
         {
-            _bookRepository = bookRepository 
-                ?? throw new ArgumentNullException(nameof(bookRepository));
-            _authorRepository = authorRepository 
-                ?? throw new ArgumentNullException(nameof(authorRepository));
-            _mapper = mapper 
-                ?? throw new ArgumentNullException(nameof(mapper));
+            _bookRepository = bookRepository
+                              ?? throw new ArgumentNullException(nameof(bookRepository));
+            _authorRepository = authorRepository
+                                ?? throw new ArgumentNullException(nameof(authorRepository));
+            _mapper = mapper
+                      ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-    
+
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,7 +47,7 @@ namespace Library.API.Controllers
             var booksFromRepo = await _bookRepository.GetBooksAsync(authorId);
             return Ok(_mapper.Map<IEnumerable<Book>>(booksFromRepo));
         }
-        
+
         /// <summary>
         /// Get a book by  id for a specific author
         /// </summary>
@@ -54,8 +55,10 @@ namespace Library.API.Controllers
         /// <param name="bookId">The id of the book</param>
         /// <returns>An ActionResult of type Book</returns>
         /// <response code="200">Returns the requested book</response>
+        [RequestHeaderMatchesMediaType("Accept","application/json","application/vnd.sahin.book+json")]
+        [Produces("application/vnd.sahin.book+json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(Book))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Book))]
         [HttpGet("{bookId:guid}")]
         public async Task<IActionResult> GetBook(
             Guid authorId,
@@ -75,12 +78,30 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<Book>(bookFromRepo));
         }
 
+        [RequestHeaderMatchesMediaType("Accept","application/vnd.sahin.bookwithconcatenatedauthorname+json")]
+        [Produces("application/vnd.sahin.bookwithconcatenatedauthorname+json")]
+        [HttpGet("{bookId}")]
+        public async Task<ActionResult<BookWithConcatenatedAuthorName>> GetBookWithConcatenatedAuthorName(Guid authorId,Guid bookId)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookFromRepo = await _bookRepository.GetBookAsync(authorId, bookId);
+            if (bookFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<BookWithConcatenatedAuthorName>(bookFromRepo));
+        }
 
         [HttpPost()]
         // [ProducesResponseType(StatusCodes.Status201Created)]
         // [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        [Consumes("application/json","application/xml")]
+        [Consumes("application/json", "application/xml")]
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             BookForCreation bookForCreation)
