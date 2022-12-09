@@ -1,5 +1,7 @@
 using System.Reflection;
+using Library.API;
 using Library.API.Contexts;
+using Library.API.OperationFİlters;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -68,6 +70,16 @@ builder.Services.AddSwaggerGen(builder =>
         }
     });
 
+    // builder.ResolveConflictingActions(apiDescription =>
+    // {
+    //     return apiDescription.First();
+    //     // var firstDescription = apiDescription.First();
+    //     // var secondDescription = apiDescription.ElementAt(1);
+    //     // firstDescription.SupportedResponseTypes.AddRange(secondDescription.SupportedResponseTypes.Where(a=>a.StatusCode==200));
+    //     // return firstDescription;
+    // });
+    
+    builder.OperationFilter<GetBookOperationFilter>();
     var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
     builder.IncludeXmlComments(xmlCommentsFullPath);
@@ -78,7 +90,7 @@ app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
-    options.RoutePrefix = string.Empty;
+    options.RoutePrefix = string.Empty;//
 });
 // Configure the HTTP request pipeline.
 

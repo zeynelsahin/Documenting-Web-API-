@@ -59,7 +59,7 @@ namespace Library.API.Controllers
         [Produces("application/vnd.sahin.book+json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Book))]
-        [HttpGet("{bookId:guid}")]
+        [HttpGet("{bookId:guid}",Name = "GetBook")]
         public async Task<IActionResult> GetBook(
             Guid authorId,
             Guid bookId)
@@ -81,6 +81,9 @@ namespace Library.API.Controllers
         [RequestHeaderMatchesMediaType("Accept","application/vnd.sahin.bookwithconcatenatedauthorname+json")]
         [Produces("application/vnd.sahin.bookwithconcatenatedauthorname+json")]
         [HttpGet("{bookId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<BookWithConcatenatedAuthorName>> GetBookWithConcatenatedAuthorName(Guid authorId,Guid bookId)
         {
             if (!await _authorRepository.AuthorExistsAsync(authorId))
