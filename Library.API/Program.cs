@@ -9,7 +9,13 @@ using Newtonsoft.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(configure => { configure.ReturnHttpNotAcceptable = true; }).AddNewtonsoftJson(setupAction =>
+builder.Services.AddControllers(configure =>
+{
+    configure.ReturnHttpNotAcceptable = true;
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+}).AddNewtonsoftJson(setupAction =>
 {
     setupAction.SerializerSettings.ContractResolver =
         new CamelCasePropertyNamesContractResolver();
