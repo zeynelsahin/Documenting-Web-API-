@@ -5,7 +5,7 @@
 namespace Library.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController
+    [ApiController]
     // [ApiConventionType(typeof(DefaultApiConventions))]
     public class ConventionTestsController : ControllerBase
     {
@@ -26,8 +26,7 @@ namespace Library.API.Controllers
 
         // POST api/<ConventionTestsController>
         [HttpPost]
-        //[ApiConventionMethod(typeof(CustomConventions),
-        //    nameof(CustomConventions.Insert))]
+       [ApiConventionMethod(typeof(CustomConventions),nameof(CustomConventions.Insert))]
         public void InsertTest([FromBody] string value)
         {
         }

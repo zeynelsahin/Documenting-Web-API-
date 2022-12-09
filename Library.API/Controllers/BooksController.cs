@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Library.API.Controllers
 {
     [Route("api/authors/{authorId}/books")]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+    // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ApiController]
+    [Produces("application/json","application/xml")]
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
@@ -76,9 +77,10 @@ namespace Library.API.Controllers
 
 
         [HttpPost()]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        // [ProducesResponseType(StatusCodes.Status201Created)]
+        // [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
+        [Consumes("application/json","application/xml")]
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             BookForCreation bookForCreation)
