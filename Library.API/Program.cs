@@ -80,6 +80,8 @@ builder.Services.AddSwaggerGen(builder =>
     // });
     
     builder.OperationFilter<GetBookOperationFilter>();
+    builder.OperationFilter<CreateBookOperationFilter>();
+    
     var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
     builder.IncludeXmlComments(xmlCommentsFullPath);

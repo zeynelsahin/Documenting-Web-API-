@@ -3,6 +3,7 @@ using Library.API.Attributes;
 using Library.API.Models;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.API.Controllers
 {
@@ -78,7 +79,7 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<Book>(bookFromRepo));
         }
 
-        [RequestHeaderMatchesMediaType("Accept","application/vnd.sahin.bookwithconcatenatedauthorname+json")]
+        [RequestHeaderMatchesMediaType("Accept","application/vnd.sahin.bookwithconcatenateauthorname+json")]
         [Produces("application/vnd.sahin.bookwithconcatenatedauthorname+json")]
         [HttpGet("{bookId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -100,11 +101,12 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<BookWithConcatenatedAuthorName>(bookFromRepo));
         }
 
-        [HttpPost()]
-        // [ProducesResponseType(StatusCodes.Status201Created)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
-        [Consumes("application/json", "application/xml")]
+        [HttpPost(Name = "CreateBook")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        // [Consumes("application/json", "application/xml")]
+        [RequestHeaderMatchesMediaType("Content-Type","application/json","application/vnd.sahin.bookforcreation+josn")]
+        [Consumes("application/json","application/vnd.sahin.bookforcreation+json")]
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             BookForCreation bookForCreation)
@@ -115,6 +117,29 @@ namespace Library.API.Controllers
             }
 
             var bookToAdd = _mapper.Map<Entities.Book>(bookForCreation);
+            _bookRepository.AddBook(bookToAdd);
+            await _bookRepository.SaveChangesAsync();
+
+            return CreatedAtRoute(
+                "GetBook",
+                new { authorId, bookId = bookToAdd.Id },
+                _mapper.Map<Book>(bookToAdd));
+        }
+        [HttpPost()]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [RequestHeaderMatchesMediaType("Content-Type","application/vnd.sahin.zeynell+json")]
+        [Consumes("application/zeynell+json")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<Book>> CreateBookWithAmountOfPages(
+            Guid authorId,[FromBody] BookForCreationWithAmountOfPages bookForCreationWithAmountOfPages)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookToAdd = _mapper.Map<Entities.Book>(bookForCreationWithAmountOfPages);
             _bookRepository.AddBook(bookToAdd);
             await _bookRepository.SaveChangesAsync();
 
