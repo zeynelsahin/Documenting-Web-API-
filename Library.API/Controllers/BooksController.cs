@@ -13,6 +13,7 @@ namespace Library.API.Controllers
     // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ApiController]
     [Produces("application/json", "application/xml")]
+    [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationBooks")]
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;

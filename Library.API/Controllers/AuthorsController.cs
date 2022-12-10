@@ -8,6 +8,7 @@ namespace Library.API.Controllers
 {
     [Route("api/authors")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationAuthors")]
     public class AuthorsController : ControllerBase
     {
         private readonly IAuthorRepository _authorsRepository;

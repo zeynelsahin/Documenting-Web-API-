@@ -52,11 +52,27 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSwaggerGen(builder =>
 {
-    builder.SwaggerDoc("LibraryOpenAPISpecification", new()
+    // builder.SwaggerDoc("LibraryOpenAPISpecification", new()
+    // {
+    //     Title = "Library API",
+    //     Version = "1",
+    //     Description = "Through this API you can access authors and their books",
+    //     Contact = new ()
+    //     {
+    //         Email = "zeynelsahin@zeynelsahin.com",
+    //         Name = "Zeynel Şahin",
+    //         Url = new Uri("https://www.zeynelsahin.com"),
+    //     },
+    //     License = new ()
+    //     {
+    //         Name = "MIT License",
+    //         Url = new Uri("https://opensourceçorg/licenses/MIT")
+    //     }
+    builder.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new()
     {
-        Title = "Library API",
+        Title = "Library API (Authors)",
         Version = "1",
-        Description = "Through this API you can access authors and their books",
+        Description = "Through this API you can access authors",
         Contact = new ()
         {
             Email = "zeynelsahin@zeynelsahin.com",
@@ -69,7 +85,23 @@ builder.Services.AddSwaggerGen(builder =>
             Url = new Uri("https://opensourceçorg/licenses/MIT")
         }
     });
-
+    builder.SwaggerDoc("LibraryOpenAPISpecificationBooks", new()
+    {
+        Title = "Library API (Books)",
+        Version = "1",
+        Description = "Through this API you can access books",
+        Contact = new ()
+        {
+            Email = "zeynelsahin@zeynelsahin.com",
+            Name = "Zeynel Şahin",
+            Url = new Uri("https://www.zeynelsahin.com"),
+        },
+        License = new ()
+        {
+            Name = "MIT License",
+            Url = new Uri("https://opensourceçorg/licenses/MIT")
+        }
+    });
     // builder.ResolveConflictingActions(apiDescription =>
     // {
     //     return apiDescription.First();
@@ -91,7 +123,9 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+    // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
+    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
     options.RoutePrefix = string.Empty;//
 });
 // Configure the HTTP request pipeline.
