@@ -5,6 +5,7 @@ using Library.API.OperationFİlters;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -14,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers(configure =>
 {
-    configure.ReturnHttpNotAcceptable = true;//Kabul edilmeyen acceptapt default olarak json dönmüyor
+    configure.ReturnHttpNotAcceptable = true;//Kabul edilmeyen accept default olarak json dönmüyor
     // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
     // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
     // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
@@ -50,13 +51,36 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
 builder.Services.AddSwaggerGen(builder =>
 {
-    // builder.SwaggerDoc("LibraryOpenAPISpecification", new()
+    builder.SwaggerDoc("LibraryOpenAPISpecification", new()
+    {
+        Title = "Library API",
+        Version = "1",
+        Description = "Through this API you can access authors and their books",
+        Contact = new()
+        {
+            Email = "zeynelsahin@zeynelsahin.com",
+            Name = "Zeynel Şahin",
+            Url = new Uri("https://www.zeynelsahin.com"),
+        },
+        License = new()
+        {
+            Name = "MIT License",
+            Url = new Uri("https://opensourceçorg/licenses/MIT")
+        }
+    });
+    // builder.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new()
     // {
-    //     Title = "Library API",
+    //     Title = "Library API (Authors)",
     //     Version = "1",
-    //     Description = "Through this API you can access authors and their books",
+    //     Description = "Through this API you can access authors",
     //     Contact = new ()
     //     {
     //         Email = "zeynelsahin@zeynelsahin.com",
@@ -68,40 +92,24 @@ builder.Services.AddSwaggerGen(builder =>
     //         Name = "MIT License",
     //         Url = new Uri("https://opensourceçorg/licenses/MIT")
     //     }
-    builder.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new()
-    {
-        Title = "Library API (Authors)",
-        Version = "1",
-        Description = "Through this API you can access authors",
-        Contact = new ()
-        {
-            Email = "zeynelsahin@zeynelsahin.com",
-            Name = "Zeynel Şahin",
-            Url = new Uri("https://www.zeynelsahin.com"),
-        },
-        License = new ()
-        {
-            Name = "MIT License",
-            Url = new Uri("https://opensourceçorg/licenses/MIT")
-        }
-    });
-    builder.SwaggerDoc("LibraryOpenAPISpecificationBooks", new()
-    {
-        Title = "Library API (Books)",
-        Version = "1",
-        Description = "Through this API you can access books",
-        Contact = new ()
-        {
-            Email = "zeynelsahin@zeynelsahin.com",
-            Name = "Zeynel Şahin",
-            Url = new Uri("https://www.zeynelsahin.com"),
-        },
-        License = new ()
-        {
-            Name = "MIT License",
-            Url = new Uri("https://opensourceçorg/licenses/MIT")
-        }
-    });
+    // });
+    // builder.SwaggerDoc("LibraryOpenAPISpecificationBooks", new()
+    // {
+    //     Title = "Library API (Books)",
+    //     Version = "1",
+    //     Description = "Through this API you can access books",
+    //     Contact = new ()
+    //     {
+    //         Email = "zeynelsahin@zeynelsahin.com",
+    //         Name = "Zeynel Şahin",
+    //         Url = new Uri("https://www.zeynelsahin.com"),
+    //     },
+    //     License = new ()
+    //     {
+    //         Name = "MIT License",
+    //         Url = new Uri("https://opensourceçorg/licenses/MIT")
+    //     }
+    // });
     // builder.ResolveConflictingActions(apiDescription =>
     // {
     //     return apiDescription.First();
@@ -123,9 +131,9 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
-    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
-    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
+    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+    // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
+    // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
     options.RoutePrefix = string.Empty;//
 });
 // Configure the HTTP request pipeline.
