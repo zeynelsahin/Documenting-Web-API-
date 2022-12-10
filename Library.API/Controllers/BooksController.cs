@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace Library.API.Controllers
 {
-    [Route("api/authors/{authorId}/books")]
+    [Route("api/v{version:apiVersion}/authors/{authorId}/books")]
     // [ProducesResponseType(StatusCodes.Status400BadRequest)]
     // [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
     // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ApiController]
     [Produces("application/json", "application/xml")]
-    [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationBooks")]
+    // [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationBooks")]
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;

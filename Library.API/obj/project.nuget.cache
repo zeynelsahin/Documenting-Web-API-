@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hIbMuNZNS7MaiDywOBZNEJRB96rF6mpL4hSAtxb7O1x7bXNPkGCX65AE86qLtx95F/Pboc83cxmu3FpgOCA3EQ==",
+  "dgSpecHash": "4Ycoo1h0eqBwuxQfIxTpkzOPRgbd+RZrocbl7HLZ1MNKVxbjMM5hvcvuEEcKAapOOLkVX7qctiJ8Q0xOewFnMw==",
   "success": true,
   "projectFilePath": "C:\\Users\\zeynels\\Desktop\\Git Project\\API Documentation\\Library.API\\Library.API.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\zeynels\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.3\\microsoft.aspnetcore.jsonpatch.6.0.3.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.3\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.3.nupkg.sha512",
+    "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.aspnetcore.mvc.versioning\\5.0.0\\microsoft.aspnetcore.mvc.versioning.5.0.0.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.data.sqlite.core\\6.0.3\\microsoft.data.sqlite.core.6.0.3.nupkg.sha512",
     "C:\\Users\\zeynels\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.3\\microsoft.entityframeworkcore.6.0.3.nupkg.sha512",

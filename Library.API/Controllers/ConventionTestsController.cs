@@ -4,7 +4,7 @@
 
 namespace Library.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     // [ApiConventionType(typeof(DefaultApiConventions))]
     public class ConventionTestsController : ControllerBase

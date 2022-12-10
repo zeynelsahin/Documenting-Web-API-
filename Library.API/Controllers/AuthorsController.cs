@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers
 {
-    [Route("api/authors")]
+    [Route("api/v{version:apiVersion}/authors")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationAuthors")]
+    // [ApiExplorerSettings(GroupName = "LibraryOpenAPISpecificationAuthors")]  
     public class AuthorsController : ControllerBase
     {
         private readonly IAuthorRepository _authorsRepository;
