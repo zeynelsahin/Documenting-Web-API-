@@ -4,6 +4,8 @@ using Library.API.Contexts;
 using Library.API.OperationFİlters;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers(configure =>
 {
-    configure.ReturnHttpNotAcceptable = true;//Kabul edilmeyen accept default olarak json dönmüyor
+    configure.ReturnHttpNotAcceptable = true; //Kabul edilmeyen accept default olarak json dönmüyor
     // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
     // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
     // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
@@ -57,25 +59,65 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.ReportApiVersions = true;
 });
-builder.Services.AddSwaggerGen(builder =>
+
+builder.Services.AddVersionedApiExplorer(options => { options.GroupNameFormat = "'v'VV"; });
+var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider().GetService<IApiVersionDescriptionProvider>();
+
+builder.Services.AddSwaggerGen(setupAction =>
 {
-    builder.SwaggerDoc("LibraryOpenAPISpecification", new()
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
     {
-        Title = "Library API",
-        Version = "1",
-        Description = "Through this API you can access authors and their books",
-        Contact = new()
+        setupAction.SwaggerDoc($"LibraryOpenAPISpecification{description.GroupName}", new()
         {
-            Email = "zeynelsahin@zeynelsahin.com",
-            Name = "Zeynel Şahin",
-            Url = new Uri("https://www.zeynelsahin.com"),
-        },
-        License = new()
+            Title = "Library API",
+            Version = description.ApiVersion.ToString(),
+            Description = "Through this API you can access authors and their books",
+            Contact = new()
+            {
+                Email = "zeynelsahin@zeynelsahin.com",
+                Name = "Zeynel Şahin",
+                Url = new Uri("https://www.zeynelsahin.com"),
+            },
+            License = new()
+            {
+                Name = "MIT License",
+                Url = new Uri("https://opensourceçorg/licenses/MIT")
+            }
+        });
+    }
+
+    setupAction.DocInclusionPredicate((documentName, apiDescription) =>
+    {
+        var actionApiVersionModel = apiDescription.ActionDescriptor.GetApiVersionModel(ApiVersionMapping.Explicit | ApiVersionMapping.Implicit);
+        if (actionApiVersionModel == null)
         {
-            Name = "MIT License",
-            Url = new Uri("https://opensourceçorg/licenses/MIT")
+            return true;
         }
+
+        if (actionApiVersionModel.DeclaredApiVersions.Any())
+        {
+            return actionApiVersionModel.DeclaredApiVersions.Any(v => $"LibraryOpenAPISpecificationv{v}" == documentName);
+        }
+
+        return actionApiVersionModel.ImplementedApiVersions.Any(v => $"LibraryOpenAPISpecificationv{v}" == documentName);
     });
+    // setupAction.SwaggerDoc("LibraryOpenAPISpecification", new()
+    // {
+    //     Title = "Library API",
+    //     Version = "1",
+    //     Description = "Through this API you can access authors and their books",
+    //     Contact = new()
+    //     {
+    //         Email = "zeynelsahin@zeynelsahin.com",
+    //         Name = "Zeynel Şahin",
+    //         Url = new Uri("https://www.zeynelsahin.com"),
+    //     },
+    //     License = new()
+    //     {
+    //         Name = "MIT License",
+    //         Url = new Uri("https://opensourceçorg/licenses/MIT")
+    //     }
+    // });
     // builder.SwaggerDoc("LibraryOpenAPISpecificationAuthors", new()
     // {
     //     Title = "Library API (Authors)",
@@ -118,23 +160,28 @@ builder.Services.AddSwaggerGen(builder =>
     //     // firstDescription.SupportedResponseTypes.AddRange(secondDescription.SupportedResponseTypes.Where(a=>a.StatusCode==200));
     //     // return firstDescription;
     // });
-    
-    builder.OperationFilter<GetBookOperationFilter>();
-    builder.OperationFilter<CreateBookOperationFilter>();
-    
+
+    setupAction.OperationFilter<GetBookOperationFilter>();
+    setupAction.OperationFilter<CreateBookOperationFilter>();
+
     var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-    builder.IncludeXmlComments(xmlCommentsFullPath);
+    setupAction.IncludeXmlComments(xmlCommentsFullPath);
 });
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint($"/swagger/LibraryOpenAPISpecification{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+    }
+
+    // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
     // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
     // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
-    options.RoutePrefix = string.Empty;//
+    options.RoutePrefix = string.Empty; //
 });
 // Configure the HTTP request pipeline.
 

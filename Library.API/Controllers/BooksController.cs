@@ -62,6 +62,7 @@ namespace Library.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Book))]
         [HttpGet("{bookId:guid}",Name = "GetBook")]
+        [ApiVersion("2.0")]
         public async Task<IActionResult> GetBook(
             Guid authorId,
             Guid bookId)
