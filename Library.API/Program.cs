@@ -1,14 +1,18 @@
 using System.Reflection;
 using Library.API;
+using Library.API.Authentication;
 using Library.API.Contexts;
 using Library.API.OperationFİlters;
 using Library.API.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
@@ -18,9 +22,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(configure =>
 {
     configure.ReturnHttpNotAcceptable = true; //Kabul edilmeyen accept default olarak json dönmüyor
-    // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
-    // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
-    // configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+    configure.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status401Unauthorized));
+    configure.Filters.Add(new AuthorizeFilter());
 }).AddNewtonsoftJson(setupAction =>
 {
     setupAction.SerializerSettings.ContractResolver =
@@ -65,6 +71,27 @@ var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider().GetS
 
 builder.Services.AddSwaggerGen(setupAction =>
 {
+    setupAction.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme()
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "basic",
+        Description = "Input your username and password to access this API"
+    });
+
+    setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme()
+            {
+                Reference = new OpenApiReference()
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "basicAuth"
+                }
+            },
+            new List<string>()
+        }
+    });
     foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
     {
         setupAction.SwaggerDoc($"LibraryOpenAPISpecification{description.GroupName}", new()
@@ -168,6 +195,8 @@ builder.Services.AddSwaggerGen(setupAction =>
     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
     setupAction.IncludeXmlComments(xmlCommentsFullPath);
 });
+
+builder.Services.AddAuthentication("Basic").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("Basic", null);
 var app = builder.Build();
 
 app.UseSwagger();
@@ -187,6 +216,7 @@ app.UseSwaggerUI(options =>
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
