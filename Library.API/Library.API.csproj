@@ -31,4 +31,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="EmbeddedAssests\index.html" />
+    <EmbeddedResource Include="EmbeddedAssets\index.html" />
+  </ItemGroup>
+
 </Project>

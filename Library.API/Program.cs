@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 var builder = WebApplication.CreateBuilder(args);
@@ -198,7 +199,7 @@ builder.Services.AddSwaggerGen(setupAction =>
 
 builder.Services.AddAuthentication("Basic").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("Basic", null);
 var app = builder.Build();
-
+app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -206,7 +207,15 @@ app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint($"/swagger/LibraryOpenAPISpecification{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
     }
+    // options.DefaultModelExpandDepth(2);// genişlik 
+    options.EnableFilter("");// Ekrandan method araması yapılabilirlik getiriyor
+    options.DefaultModelRendering(ModelRendering.Example);
+    options.DocExpansion(DocExpansion.None);// Tüm metodları kapatır
+    options.EnableDeepLinking();// urlden link ile api methodunun tam görünmesi #/ControllerName_operationId_methodName
+    // options.DisplayOperationId(); // yukarıda kullanılan operation ıdlerin görünmesini sağlar
+    options.InjectStylesheet("/assets/custom-ui.css");
 
+    options.IndexStream = () => typeof(Program).Assembly.GetManifestResourceStream("Library.API.EmbeddedAssets.index.html");
     // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
     // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationAuthors/swagger.json", "Library API (Authors)");
     // options.SwaggerEndpoint("/swagger/LibraryOpenAPISpecificationBooks/swagger.json", "Library API (Books)");
